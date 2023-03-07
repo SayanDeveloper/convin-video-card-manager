@@ -17,12 +17,10 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCardItems()).then((res) => {
-      console.log(res)
-    });
-    dispatch(getBuckets()).then((res) => {
-      console.log(res)
-    });
+    dispatch(getCardItems())
+    // dispatch(getBuckets()).then((res) => {
+    //   console.log(res)
+    // });
   }, [])
 
   useEffect(() => {
@@ -40,7 +38,6 @@ function App() {
         <Route path='/buckets' element={<Buckets />} />
         <Route path='/history' element={<History />} />
       </Routes>
-      <DatePicker />
     </>
   );
 }

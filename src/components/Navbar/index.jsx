@@ -1,6 +1,4 @@
 import React, { Component, useEffect, useState } from 'react';
-import LeftMenu from './LeftMenu'
-import RightMenu from './RightMenu'
 import { Drawer, Button, Layout, Menu, Grid } from 'antd';
 import {AlignRightOutlined} from "@ant-design/icons"
 import { Link } from 'react-router-dom';
@@ -31,6 +29,7 @@ const Navbar = () => {
             top: 0,
             zIndex: 1,
             width: '100%',
+            background: "linear-gradient(0deg, #0466a3 0%, #000965 100%)"
             }}
         >
             <span style={{color: "white"}}>
