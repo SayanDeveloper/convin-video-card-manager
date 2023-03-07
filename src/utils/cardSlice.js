@@ -5,6 +5,7 @@ import { db } from '../firebase';
 
 const initialState = {
   cards: [],
+  buckets: [],
   isLoading: true,
 };
 
@@ -35,8 +36,9 @@ export const getBuckets = createAsyncThunk(
       const docsSnap = await getDocs(colRef);
       let allBuckets = []
       docsSnap.forEach(doc => {
-        allBuckets.push(doc.data())
+        allBuckets.push(doc.data().name)
       })
+      console.log(allBuckets)
 
       return allBuckets
     
@@ -92,6 +94,20 @@ const cardSlice = createSlice({
         console.log(state.isLoading)
       })
       .addCase(getCardItems.rejected, (state, action) => {
+        console.log(action);
+        state.isLoading = false;
+        console.log(state.isLoading)
+      })
+      .addCase(getBuckets.pending, (state) => {
+        state.isLoading = true;
+        console.log(state.isLoading)
+      })
+      .addCase(getBuckets.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.buckets = action.payload;
+        console.log(state.isLoading)
+      })
+      .addCase(getBuckets.rejected, (state, action) => {
         console.log(action);
         state.isLoading = false;
         console.log(state.isLoading)

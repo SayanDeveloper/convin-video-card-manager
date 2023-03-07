@@ -7,7 +7,7 @@ import videoLogo from "../../assets/videoLogo.png"
 const Card = ({id, title, url}) => {
   return (
     <AntCard
-        style={{ width: 300, borderTop: "5px solid black", margin: "10px 20px" }}
+        style={{ width: 300, borderTop: "5px solid black", margin: "10px 20px", cursor: "pointer" }}
         cover={
         <img
             alt="example"
@@ -20,17 +20,19 @@ const Card = ({id, title, url}) => {
             }
         }}
         actions={[
-        <DeleteOutlined key="download" />,
+        <DeleteOutlined style={{height: "100%"}} key="download" />,
         <EditOutlined key="edit" onClick={(e) => {
             console.log("heyyy")
         }} />,
         ]}
     >
-        <Meta
+        {/* <Meta
         avatar={<Avatar src="https://joesch.moe/api/v1/random" />}
         title="Card title"
         description="This is the description"
-        />
+        /> */}
+        <div style={{fontWeight: 600, fontSize: "18px"}}>{title}</div>
+        <div style={{fontSize: "16px"}}>{url}</div>
     </AntCard>
   )
 }

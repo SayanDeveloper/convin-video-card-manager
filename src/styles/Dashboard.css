@@ -12,3 +12,7 @@
     justify-content: center;
     flex-wrap: wrap;
 }
+
+.ant-card {
+    align-self: flex-start;
+}

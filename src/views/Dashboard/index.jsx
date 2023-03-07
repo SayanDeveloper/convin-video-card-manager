@@ -1,70 +1,65 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import Card from '../../components/Card';
-import { getCardItems } from '../../utils/cardSlice'
+import { getBuckets, getCardItems } from '../../utils/cardSlice'
 import "../../styles/Dashboard.css"
 import { Button, Dropdown, Select, Space } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 
 const Dashboard = () => {
-  const { cards } = useSelector((store) => store.card);
+  const [bucketList, setBucketList] = useState([])
+  const [displayCards, setDsiplayCards] = useState([])
+  const { cards, buckets } = useSelector((store) => store.card);
   const dispatch = useDispatch();
 
-  const items = [
-    {
-      label: '3rd menu item',
-      key: '3',
-    },
-    {
-      label: '4th menu item',
-      key: '4',
-    },
-    {
-      label: '5th menu item',
-      key: '5',
-    },
-  ];  
+  const filterCardsByBucket = (bucket) => {
+    if (bucket === "All") {
+      setDsiplayCards(cards)
+    } else {
+      let filtered = cards.filter(card => card.bucket === bucket)
+      setDsiplayCards(filtered)
+    }
+  }
 
   useEffect(() => {
-    dispatch(getCardItems())
+    dispatch(getCardItems()).then(res => {
+      setDsiplayCards(res.payload)
+    })
+    dispatch(getBuckets())
   }, [])
+
+  useEffect(() => {
+    if (buckets) {
+      let items = [{label: "All", value: "All"}]
+      buckets.forEach((each) => {
+        items.push({
+          label: each,
+          value: each
+        })
+      })
+      setBucketList(items)
+    }
+  }, [buckets])
 
   return (
     <div className='dashboard-container'>
+      <Button><PlusOutlined /> Create A Card</Button>
       <Space style={{float: "right"}}>
         <span style={{fontSize: "16px"}}>
         Filter By Bucket : 
         </span>
         <Select
-          defaultValue="lucy"
+          defaultValue="All"
           style={{
             width: 120,
           }}
-          onChange={(e) => console.log(e)}
-          options={[
-            {
-              value: 'jack',
-              label: 'Jack',
-            },
-            {
-              value: 'lucy',
-              label: 'Lucy',
-            },
-            {
-              value: 'Yiminghe',
-              label: 'yiminghe',
-            },
-            {
-              value: 'disabled',
-              label: 'Disabled',
-              disabled: true,
-            },
-          ]}
+          onChange={(bucket) => filterCardsByBucket(bucket)}
+          options={bucketList}
         />
       </Space>
       <div className='cards-container'>
-        {cards.map((card) => (
-            <Card id={card.id} title={card.name} url={card.link} />
+        {displayCards.map((card, index) => (
+            <Card key={index} id={card.id} title={card.name} url={card.link} />
         ))}
       </div>
     </div>

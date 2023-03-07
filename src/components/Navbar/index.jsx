@@ -29,7 +29,8 @@ const Navbar = () => {
             top: 0,
             zIndex: 1,
             width: '100%',
-            background: "linear-gradient(0deg, #0466a3 0%, #000965 100%)"
+            background: "linear-gradient(0deg, #0466a3aa 0%, #000965 100%)",
+            backdropFilter: "blur(15px)"
             }}
         >
             <span style={{color: "white"}}>
