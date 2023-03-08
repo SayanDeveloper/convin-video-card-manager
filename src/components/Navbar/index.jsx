@@ -1,7 +1,8 @@
 import React, { Component, useEffect, useState } from 'react';
-import { Drawer, Button, Layout, Menu, Grid } from 'antd';
+import { Drawer, Button, Layout, Menu, Grid, Image } from 'antd';
 import {AlignRightOutlined} from "@ant-design/icons"
 import { Link } from 'react-router-dom';
+import logo from "../../assets/convinLogo.png"
 import "../../styles/Navbar.css";
 
 const { Header } = Layout;
@@ -14,7 +15,6 @@ const Navbar = () => {
 
     useEffect(() => {
         for (let each of Object.keys(screens)) {
-            console.log(each)
             if (screens[each]) {
                 setCurrentSize(each)
             }
@@ -29,13 +29,15 @@ const Navbar = () => {
             top: 0,
             zIndex: 1,
             width: '100%',
-            background: "linear-gradient(0deg, #0466a3aa 0%, #000965 100%)",
+            // background: "linear-gradient(0deg, #0466a3aa 0%, #000965 100%)",
+            background: "#045557dd",
             backdropFilter: "blur(15px)"
             }}
         >
-            <span style={{color: "white"}}>
-                Logo
-            </span>
+            {/* <span style={{color: "white"}}> */}
+                <img src={logo} style={{width: "120px", height: "fit-content"}} />
+                
+            {/* </span> */}
             {(currentSize === "sm" || currentSize === "xs") ?
                 <>
                     <Button style={{float: "right", marginTop: "10px"}} onClick={() => setOpen(true)}>

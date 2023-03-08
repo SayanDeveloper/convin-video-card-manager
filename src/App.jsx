@@ -3,7 +3,7 @@ import './App.css';
 import { DatePicker } from 'antd';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createCard, getBuckets, getCardItems } from './utils/cardSlice';
+import { createBucket, createCard, getBuckets, getCardItems } from './utils/cardSlice';
 import Loader from './components/Loader';
 import Navbar from './components/Navbar';
 import { Route, Routes } from 'react-router';
@@ -17,10 +17,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCardItems())
-    dispatch(getBuckets()).then((res) => {
-      console.log(res)
-    });
+    dispatch(getBuckets());
   }, [])
 
   useEffect(() => {

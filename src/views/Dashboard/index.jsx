@@ -24,6 +24,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
+    if (newCardName === "" || newCardUrl === "") return
     const newCard = {
       id: new Date().getTime().toString(), 
       name: newCardName, 
@@ -64,10 +65,10 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    // dispatch(getCardItems()).then(res => {
-    //   setDisplayCards(res.payload)
-    // })
-    // dispatch(getBuckets())
+    dispatch(getCardItems()).then(res => {
+      setDisplayCards(res.payload)
+    })
+    dispatch(getBuckets())
   }, [])
 
   useEffect(() => {
@@ -79,8 +80,8 @@ const Dashboard = () => {
       let items = []
       buckets.forEach((each) => {
         items.push({
-          label: each,
-          value: each
+          label: each.name,
+          value: each.id
         })
       })
       setNewCardBucket(items[0]?.value || "All")
@@ -151,7 +152,7 @@ const Dashboard = () => {
               Return
             </Button>,
             <Button key="submit" type="primary" loading={isLoading} onClick={handleEdit}>
-              Edit
+              Update
             </Button>,
           ]}
         >
