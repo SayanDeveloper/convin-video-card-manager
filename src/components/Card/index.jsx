@@ -6,7 +6,7 @@ import videoLogo from "../../assets/videoLogo.png"
 import { useDispatch } from 'react-redux';
 import { clearCards, deleteCard, getCardItems } from '../../utils/cardSlice';
 
-const Card = ({cardDetails, setCardDetailModalOpen, setSelectedCard}) => {
+const Card = ({cardDetails, setCardDetailModalOpen, setSelectedCard, setCardEditModalOpen}) => {
     const dispatch = useDispatch()
   return (
     <AntCard
@@ -33,6 +33,8 @@ const Card = ({cardDetails, setCardDetailModalOpen, setSelectedCard}) => {
         }} />,
         <EditOutlined key="edit" onClick={(e) => {
             console.log("heyyy")
+            setSelectedCard(cardDetails)
+            setCardEditModalOpen(true)
         }} />,
         ]}
     >

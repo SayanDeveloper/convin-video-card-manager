@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
 import { db } from '../firebase';
 
@@ -78,7 +78,7 @@ export const createBucket = createAsyncThunk(
 );
 
 export const deleteCard = createAsyncThunk(
-  'card/createBucket',
+  'card/deleteCard',
   async (payload, thunkAPI) => {
     try {
       console.log("payload", payload)
@@ -96,6 +96,26 @@ export const deleteCard = createAsyncThunk(
     }
   }
 );
+
+export const updateCard = createAsyncThunk(
+  'card/updateCard',
+  async (payload, thunkAPI) => {
+    try {
+      console.log("payload", payload)
+      const cardsRef = collection(db, "cards");
+
+      const q = query(cardsRef, where("id", "==", payload.id));
+      const docsSnap = await getDocs(q);
+      docsSnap.forEach(doc => {
+        updateDoc(doc.ref, payload)
+      })
+
+      return true
+    } catch (error) {
+      return thunkAPI.rejectWithValue('something went wrong');
+    }
+  }
+)
 
 const cardSlice = createSlice({
   name: 'cards',
@@ -153,6 +173,15 @@ const cardSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(deleteCard.rejected, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(updateCard.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateCard.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(updateCard.rejected, (state, action) => {
         state.isLoading = false;
       })
   },

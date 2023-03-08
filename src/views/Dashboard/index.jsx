@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import Card from '../../components/Card';
-import { createCard, getBuckets, getCardItems, stopLoading } from '../../utils/cardSlice'
+import { createCard, getBuckets, getCardItems, stopLoading, updateCard } from '../../utils/cardSlice'
 import "../../styles/Dashboard.css"
 import { Button, Dropdown, Input, Modal, Select, Space } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
@@ -12,10 +12,14 @@ const Dashboard = () => {
   const [filterBy, setFilterBy] = useState("All")
   const [selectedCard, setSelectedCard] = useState()
   const [createCardModalOpen, setCreateCardModalOpen] = useState(false)
+  const [cardEditModalOpen, setCardEditModalOpen] = useState(false)
   const [cardDetailModalOpen, setCardDetailModalOpen] = useState(false)
   const [newCardName, setNewCardName] = useState("")
   const [newCardUrl, setNewCardUrl] = useState("")
   const [newCardBucket, setNewCardBucket] = useState("")
+  const [editedCardName, setEditedCardName] = useState("")
+  const [editedCardUrl, setEditedCardUrl] = useState("")
+  const [editedCardBucket, setEditedCardBucket] = useState("")
   const { cards, buckets, isLoading } = useSelector((store) => store.card);
   const dispatch = useDispatch();
 
@@ -31,7 +35,22 @@ const Dashboard = () => {
         setDisplayCards([newCard, ...displayCards])
       }
     })
+    setNewCardName("")
+    setNewCardUrl("")
     setCreateCardModalOpen(false)
+  }
+
+  const handleEdit = async () => {
+    const updatedCard = {
+      id: selectedCard?.id,
+      name: editedCardName,
+      link: editedCardUrl,
+      bucket: editedCardBucket
+    }
+    await dispatch(updateCard(updatedCard)).then(res => {
+      dispatch(getCardItems())
+    })
+    setCardEditModalOpen(false)
   }
 
   const filterCardsByBucket = (bucket) => {
@@ -68,6 +87,15 @@ const Dashboard = () => {
       setBucketList(items)
     }
   }, [buckets])
+
+  useEffect(() => {
+    console.log(selectedCard?.bucket)
+    if (selectedCard) {
+      setEditedCardName(selectedCard.name)
+      setEditedCardUrl(selectedCard.link)
+      setEditedCardBucket(selectedCard.bucket)
+    }
+  }, [selectedCard])
 
   return (
     <div className='dashboard-container'>
@@ -111,6 +139,46 @@ const Dashboard = () => {
         </Space>
       </Modal>
 
+      {/* card edit modal */}
+      {cardEditModalOpen &&
+        <Modal
+          open={cardEditModalOpen}
+          title="Edit Card"
+          onOk={handleEdit}
+          onCancel={() => setCardEditModalOpen(false)}
+          footer={[
+            <Button key="back" onClick={() => setCardEditModalOpen(false)}>
+              Return
+            </Button>,
+            <Button key="submit" type="primary" loading={isLoading} onClick={handleEdit}>
+              Edit
+            </Button>,
+          ]}
+        >
+          <div style={{margin: "10px 0px"}}>
+          Enter Card Name : 
+          </div>
+          <Input placeholder="Sample Card" value={editedCardName} onChange={(e) => setEditedCardName(e.target.value)} />
+          <div style={{margin: "10px 0px"}}>
+          Enter Video Link : 
+          </div>
+          <Input placeholder="https://..." value={editedCardUrl} onChange={(e) => setEditedCardUrl(e.target.value)} />
+          <Space style={{marginTop: "10px"}}>
+            <span>
+              Choose Bucket : 
+            </span>
+            <Select
+              defaultValue={editedCardBucket}
+              style={{
+                width: 120,
+              }}
+              onChange={(bucket) => setEditedCardBucket(bucket)}
+              options={bucketList}
+            />
+          </Space>
+        </Modal>
+      }
+
       {/* card detail showup modal */}
       <Modal
         open={cardDetailModalOpen}
@@ -146,7 +214,7 @@ const Dashboard = () => {
       </Space>
       <div className='cards-container'>
         {displayCards.map((card, index) => (
-            <Card key={index} cardDetails={card} setCardDetailModalOpen={setCardDetailModalOpen} setSelectedCard={setSelectedCard} />
+            <Card key={index} cardDetails={card} setCardDetailModalOpen={setCardDetailModalOpen} setSelectedCard={setSelectedCard} setCardEditModalOpen={setCardEditModalOpen} />
         ))}
       </div>
     </div>
