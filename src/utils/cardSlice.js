@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { useDispatch } from 'react-redux';
 import { db } from '../firebase';
 
 const initialState = {
@@ -53,9 +54,9 @@ export const createCard = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       console.log("payload", payload)
-      await setDoc(doc(db, "cards"), payload);
+      const res = await addDoc(collection(db, "cards"), payload);
 
-      return true
+      return payload
     } catch (error) {
       return thunkAPI.rejectWithValue('something went wrong');
     }
@@ -76,11 +77,33 @@ export const createBucket = createAsyncThunk(
   }
 );
 
+export const deleteCard = createAsyncThunk(
+  'card/createBucket',
+  async (payload, thunkAPI) => {
+    try {
+      console.log("payload", payload)
+      const cardsRef = collection(db, "cards");
+
+      const q = query(cardsRef, where("id", "==", payload.id));
+      const docsSnap = await getDocs(q);
+      docsSnap.forEach(doc => {
+        deleteDoc(doc.ref)
+      })
+
+      return true
+    } catch (error) {
+      return thunkAPI.rejectWithValue('something went wrong');
+    }
+  }
+);
+
 const cardSlice = createSlice({
   name: 'cards',
   initialState,
-  clearCards: (state) => {
-    state.cards = [];
+  reducers: {
+    clearCards: (state) => {
+      state.cards = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -90,6 +113,7 @@ const cardSlice = createSlice({
       })
       .addCase(getCardItems.fulfilled, (state, action) => {
         state.isLoading = false;
+        console.log(action.payload)
         state.cards = action.payload;
         console.log(state.isLoading)
       })
@@ -111,11 +135,30 @@ const cardSlice = createSlice({
         console.log(action);
         state.isLoading = false;
         console.log(state.isLoading)
-      });
+      })
+      .addCase(createCard.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createCard.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.cards = [action.payload, ...state.cards]
+      })
+      .addCase(createCard.rejected, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteCard.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteCard.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteCard.rejected, (state, action) => {
+        state.isLoading = false;
+      })
   },
 });
 
 console.log(cardSlice);
 
-export const { clearCards } = cardSlice.actions
+export const { clearCards, stopLoading } = cardSlice.actions
 export default cardSlice.reducer;

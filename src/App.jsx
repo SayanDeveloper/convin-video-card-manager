@@ -18,9 +18,9 @@ function App() {
 
   useEffect(() => {
     dispatch(getCardItems())
-    // dispatch(getBuckets()).then((res) => {
-    //   console.log(res)
-    // });
+    dispatch(getBuckets()).then((res) => {
+      console.log(res)
+    });
   }, [])
 
   useEffect(() => {
