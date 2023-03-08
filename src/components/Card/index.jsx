@@ -12,15 +12,19 @@ const Card = ({cardDetails, setCardDetailModalOpen, setSelectedCard, setCardEdit
     const dispatch = useDispatch()
     const [bucketName, setBucketName] = useState("")
 
-    useEffect(async () => {
+    const getBucketName = async () => {
+        const bucketsRef = collection(db, "buckets");
+        const q = query(bucketsRef, where("id", "==", cardDetails.bucket));
+        const docsSnap = await getDocs(q);
+        docsSnap.forEach(doc => {
+            let bucket = doc.data()
+            setBucketName(bucket.name)
+        })
+    }
+
+    useEffect(() => {
         if (cardDetails) {
-            const bucketsRef = collection(db, "buckets");
-            const q = query(bucketsRef, where("id", "==", cardDetails.bucket));
-            const docsSnap = await getDocs(q);
-            docsSnap.forEach(doc => {
-                let bucket = doc.data()
-                setBucketName(bucket.name)
-            })
+            getBucketName()
         }
     }, [cardDetails])
   return (
