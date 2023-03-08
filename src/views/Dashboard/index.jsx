@@ -29,7 +29,8 @@ const Dashboard = () => {
       id: new Date().getTime().toString(), 
       name: newCardName, 
       link: newCardUrl, 
-      bucket: newCardBucket
+      bucket: newCardBucket,
+      time: new Date().getTime()
     }
     await dispatch(createCard(newCard)).then(res => {
       if (filterBy === "All" || filterBy === newCardBucket) {
@@ -185,18 +186,21 @@ const Dashboard = () => {
         open={cardDetailModalOpen}
         title="Card Details"
         onOk={handleSubmit}
-        onCancel={() => setCardDetailModalOpen(false)}
+        onCancel={() => {
+          setSelectedCard()
+          setCardDetailModalOpen(false)
+        }}
         footer={[
-          <Button key="back" onClick={() => setCardDetailModalOpen(false)}>
+          <Button key="back" onClick={() =>{
+            setSelectedCard()
+            setCardDetailModalOpen(false)
+          }}>
             Close
           </Button>,
         ]}
       >
         <p style={{fontWeight: 600, fontSize: "18px", textAlign: "center"}}>{selectedCard?.name}</p>
-        <iframe width="400px" height="230px" style={{margin: "auto", position: "relative", left:"50%", transform: "translate(-50%)", margin: "10px"}}
-        // src="https://static.vecteezy.com/system/resources/previews/003/457/190/mp4/natural-landscape-scenery-in-winter-free-video.mp4">
-        // src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">
-        src={selectedCard?.link}>
+        <iframe width="400px" height="230px" style={{margin: "auto", position: "relative", left:"50%", transform: "translate(-50%)", margin: "10px"}} src={selectedCard?.link}>
         </iframe>
       </Modal>
 

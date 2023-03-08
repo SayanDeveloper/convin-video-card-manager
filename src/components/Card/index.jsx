@@ -4,7 +4,7 @@ import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined } from 
 import Meta from 'antd/es/card/Meta';
 import videoLogo from "../../assets/videoLogo.png"
 import { useDispatch } from 'react-redux';
-import { clearCards, deleteCard, getCardItems } from '../../utils/cardSlice';
+import { addHistory, clearCards, deleteCard, getCardItems } from '../../utils/cardSlice';
 
 const Card = ({cardDetails, setCardDetailModalOpen, setSelectedCard, setCardEditModalOpen}) => {
     const dispatch = useDispatch()
@@ -17,13 +17,14 @@ const Card = ({cardDetails, setCardDetailModalOpen, setSelectedCard, setCardEdit
             src={videoLogo}
         />
         }
-        onClick={(e) => {
+        onClick={async (e) => {
             console.log(e.target.tagName)
             if (e.target.tagName === "SPAN" || e.target.tagName === "svg" || e.target.tagName === "path" || e.target.tagName === "UL") {
                 return
             }
             setSelectedCard(cardDetails)
             setCardDetailModalOpen(true)
+            dispatch(addHistory({...cardDetails, time: new Date().getTime()}))
         }}
         actions={[
         <DeleteOutlined style={{height: "100%"}} key="download" onClick={() => {

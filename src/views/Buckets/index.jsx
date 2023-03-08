@@ -75,7 +75,7 @@ const Buckets = () => {
       {/* edit bucket modal */}
       <Modal
         open={editBucketModalOpen}
-        title="Create Bucket"
+        title="Edit Bucket"
         onOk={updateBucketHandler}
         onCancel={() => setEditBucketModalOpen(false)}
         footer={[
