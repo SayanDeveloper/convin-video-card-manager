@@ -4,6 +4,7 @@
 - ReactJs
 - JavaScript
 - Ant Design 
+- Firebase
 - CSS
 - HTML
 
